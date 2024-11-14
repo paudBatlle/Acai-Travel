@@ -1,0 +1,384 @@
+{
+    "$defs": {
+        "BookingType": {
+            "description": "Specifies the type of booking-related inquiry.\nHelps in prioritizing and routing booking requests to specialized teams.",
+            "enum": [
+                "new_reservation",
+                "modification",
+                "cancellation",
+                "price_check",
+                "group_booking",
+                "corporate_booking"
+            ],
+            "title": "BookingType",
+            "type": "string"
+        },
+        "CompetitorMention": {
+            "description": "Tracks and analyzes mentions of competitor services.\nValuable for competitive analysis and service improvement.\n\nAttributes:\n    competitor_name: Name of mentioned competitor\n    context: Context of the mention\n    sentiment: Sentiment towards competitor\n    price_comparison: Price comparison indicator\n    service_comparison: Service comparison indicator",
+            "properties": {
+                "competitor_name": {
+                    "title": "Competitor Name",
+                    "type": "string"
+                },
+                "context": {
+                    "title": "Context",
+                    "type": "string"
+                },
+                "sentiment": {
+                    "$ref": "#/$defs/SentimentLevel"
+                },
+                "price_comparison": {
+                    "title": "Price Comparison",
+                    "type": "boolean"
+                },
+                "service_comparison": {
+                    "title": "Service Comparison",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "competitor_name",
+                "context",
+                "sentiment",
+                "price_comparison",
+                "service_comparison"
+            ],
+            "title": "CompetitorMention",
+            "type": "object"
+        },
+        "MonetaryReference": {
+            "description": "Analyzes financial aspects mentioned in the email.\nUseful for budget analysis and price sensitivity tracking.\n\nAttributes:\n    currency: Type of currency mentioned\n    mentioned_amount: Specific amount referenced\n    price_sensitivity: Customer's sensitivity to pricing (0-1)\n    budget_category: Luxury/mid-range/budget classification\n    payment_method_mentioned: Referenced payment methods",
+            "properties": {
+                "currency": {
+                    "title": "Currency",
+                    "type": "string"
+                },
+                "mentioned_amount": {
+                    "title": "Mentioned Amount",
+                    "type": "number"
+                },
+                "price_sensitivity": {
+                    "title": "Price Sensitivity",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "currency",
+                "mentioned_amount",
+                "price_sensitivity"
+            ],
+            "title": "MonetaryReference",
+            "type": "object"
+        },
+        "PurposeType": {
+            "description": "Classifies the primary purpose of the email communication.\nUsed to route emails to appropriate departments and track communication patterns.",
+            "enum": [
+                "booking_inquiry",
+                "customer_support",
+                "feedback",
+                "partnership",
+                "marketing",
+                "other"
+            ],
+            "title": "PurposeType",
+            "type": "string"
+        },
+        "SentimentAnalysis": {
+            "description": "Analyzes the emotional content and urgency of the email.\nCritical for prioritizing responses and identifying customer satisfaction issues.\n\nAttributes:\n    overall_tone: General sentiment of the message\n    urgency: Level of urgency expressed\n    satisfaction_score: Customer satisfaction indicator (0-1)\n    emotional_indicators: Detected emotional expressions\n    key_phrases: Important phrases identified\n    complaint_indicators: Signs of dissatisfaction\n    praise_indicators: Positive feedback markers\n    frustration_level: Detected frustration (0-1)\n    response_expectation: Expected response timeframe",
+            "properties": {
+                "overall_tone": {
+                    "$ref": "#/$defs/SentimentLevel"
+                },
+                "urgency": {
+                    "$ref": "#/$defs/UrgencyLevel"
+                },
+                "satisfaction_score": {
+                    "title": "Satisfaction Score",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "overall_tone",
+                "urgency",
+                "satisfaction_score"
+            ],
+            "title": "SentimentAnalysis",
+            "type": "object"
+        },
+        "SentimentLevel": {
+            "description": "Classifies the emotional tone of the email content.\nUsed for prioritizing responses and tracking customer satisfaction.",
+            "enum": [
+                "very_positive",
+                "positive",
+                "neutral",
+                "negative",
+                "very_negative"
+            ],
+            "title": "SentimentLevel",
+            "type": "string"
+        },
+        "ServiceMentioned": {
+            "description": "Tracks which travel services are mentioned in the email.\nUsed for service demand analysis and cross-selling opportunities.\n\nAttributes:\n    flights (bool): Mentions of air travel\n    hotels (bool): Accommodation references\n    car_rental (bool): Vehicle rental inquiries\n    tours (bool): Guided tour mentions\n    insurance (bool): Travel insurance discussions\n    visa_services (bool): Visa assistance mentions\n    transfers (bool): Transport service references\n    activities (bool): Activity/excursion mentions",
+            "properties": {
+                "flights": {
+                    "title": "Flights",
+                    "type": "boolean"
+                },
+                "hotels": {
+                    "title": "Hotels",
+                    "type": "boolean"
+                },
+                "car_rental": {
+                    "title": "Car Rental",
+                    "type": "boolean"
+                },
+                "tours": {
+                    "title": "Tours",
+                    "type": "boolean"
+                },
+                "insurance": {
+                    "title": "Insurance",
+                    "type": "boolean"
+                },
+                "visa_services": {
+                    "title": "Visa Services",
+                    "type": "boolean"
+                },
+                "transfers": {
+                    "title": "Transfers",
+                    "type": "boolean"
+                },
+                "activities": {
+                    "title": "Activities",
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "flights",
+                "hotels",
+                "car_rental",
+                "tours",
+                "insurance",
+                "visa_services",
+                "transfers",
+                "activities"
+            ],
+            "title": "ServiceMentioned",
+            "type": "object"
+        },
+        "SupportType": {
+            "description": "Categorizes the type of support being requested.\nUsed for support ticket routing and response prioritization.",
+            "enum": [
+                "documentation",
+                "luggage",
+                "transfer",
+                "check_in",
+                "insurance",
+                "visa_assistance",
+                "medical",
+                "safety",
+                "complaint",
+                "other"
+            ],
+            "title": "SupportType",
+            "type": "string"
+        },
+        "TravelType": {
+            "description": "Identifies the purpose or style of travel being discussed.\nHelps in tailoring responses and recommendations.",
+            "enum": [
+                "leisure",
+                "business",
+                "honeymoon",
+                "family",
+                "adventure",
+                "luxury",
+                "educational",
+                "medical"
+            ],
+            "title": "TravelType",
+            "type": "string"
+        },
+        "TripDetails": {
+            "description": "Captures specific details about the trip being discussed.\nEssential for understanding customer requirements and preferences.\n\nAttributes:\n    destination: Primary travel destination\n    alternative_destinations: Other locations considered\n    travel_dates: Planned travel dates\n    flexibility: Date flexibility indicator\n    group_size: Number of travelers\n    duration: Length of trip in days\n    travel_type: Purpose/style of travel\n    special_requirements: Specific needs or requests\n    activities_interested: Desired activities/experiences\n    dietary_requirements: Food preferences/restrictions\n    accessibility_needs: Accessibility requirements",
+            "properties": {
+                "destination": {
+                    "title": "Destination",
+                    "type": "string"
+                },
+                "alternative_destinations": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Alternative Destinations",
+                    "type": "array"
+                },
+                "travel_dates": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Travel Dates",
+                    "type": "array"
+                },
+                "flexibility": {
+                    "title": "Flexibility",
+                    "type": "boolean"
+                },
+                "group_size": {
+                    "title": "Group Size",
+                    "type": "integer"
+                },
+                "duration": {
+                    "title": "Duration",
+                    "type": "integer"
+                },
+                "travel_type": {
+                    "$ref": "#/$defs/TravelType"
+                },
+                "budget_range": {
+                    "title": "Budget Range",
+                    "type": "string"
+                },
+                "special_requirements": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Special Requirements",
+                    "type": "array"
+                },
+                "accessibility_needs": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "title": "Accessibility Needs",
+                    "type": "array"
+                }
+            },
+            "required": [
+                "destination",
+                "alternative_destinations",
+                "travel_dates",
+                "flexibility",
+                "group_size",
+                "duration",
+                "travel_type",
+                "budget_range",
+                "special_requirements",
+                "accessibility_needs"
+            ],
+            "title": "TripDetails",
+            "type": "object"
+        },
+        "UrgencyLevel": {
+            "description": "Indicates how quickly the email needs to be addressed.\nCritical for response prioritization and resource allocation.",
+            "enum": [
+                "standard",
+                "urgent",
+                "immediate",
+                "emergency"
+            ],
+            "title": "UrgencyLevel",
+            "type": "string"
+        }
+    },
+    "description": "Main class for comprehensive email analysis.\nCombines all aspects of email analysis for customer service and business intelligence.\n\nKey Components:\n- Basic email metadata (ID, timestamp, subject)\n- Purpose and type classification\n- Content analysis (services, monetary aspects, competitors)\n- Sentiment analysis\n- Trip details\n- Customer context\n- Priority and routing information\n- Compliance and legal considerations\n- Processing metadata and AI analysis results\n\nUsed for:\n1. Customer service optimization\n2. Business intelligence gathering\n3. Service quality monitoring\n4. Compliance tracking\n5. Performance analytics",
+    "properties": {
+        "email_id": {
+            "title": "Email Id",
+            "type": "string"
+        },
+        "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+        },
+        "subject": {
+            "title": "Subject",
+            "type": "string"
+        },
+        "primary_purpose": {
+            "$ref": "#/$defs/PurposeType"
+        },
+        "secondary_purposes": {
+            "items": {
+                "$ref": "#/$defs/PurposeType"
+            },
+            "title": "Secondary Purposes",
+            "type": "array"
+        },
+        "booking_type": {
+            "$ref": "#/$defs/BookingType"
+        },
+        "support_type": {
+            "$ref": "#/$defs/SupportType"
+        },
+        "language_detected": {
+            "title": "Language Detected",
+            "type": "string"
+        },
+        "services_mentioned": {
+            "$ref": "#/$defs/ServiceMentioned"
+        },
+        "monetary_references": {
+            "$ref": "#/$defs/MonetaryReference"
+        },
+        "competitor_mentions": {
+            "items": {
+                "$ref": "#/$defs/CompetitorMention"
+            },
+            "title": "Competitor Mentions",
+            "type": "array"
+        },
+        "sentiment": {
+            "$ref": "#/$defs/SentimentAnalysis"
+        },
+        "trip_details": {
+            "$ref": "#/$defs/TripDetails"
+        },
+        "priority_score": {
+            "title": "Priority Score",
+            "type": "number"
+        },
+        "contains_sensitive_data": {
+            "title": "Contains Sensitive Data",
+            "type": "boolean"
+        },
+        "gdpr_relevant": {
+            "title": "Gdpr Relevant",
+            "type": "boolean"
+        },
+        "requires_immediate_attention": {
+            "title": "Requires Immediate Attention",
+            "type": "boolean"
+        },
+        "confidence_score": {
+            "title": "Confidence Score",
+            "type": "number"
+        },
+        "follow_up_required": {
+            "title": "Follow Up Required",
+            "type": "boolean"
+        }
+    },
+    "required": [
+        "email_id",
+        "timestamp",
+        "subject",
+        "primary_purpose",
+        "secondary_purposes",
+        "booking_type",
+        "support_type",
+        "language_detected",
+        "services_mentioned",
+        "monetary_references",
+        "competitor_mentions",
+        "sentiment",
+        "trip_details",
+        "priority_score",
+        "contains_sensitive_data",
+        "gdpr_relevant",
+        "requires_immediate_attention",
+        "confidence_score",
+        "follow_up_required"
+    ],
+    "title": "EmailAnalysis",
+    "type": "object"
+}
